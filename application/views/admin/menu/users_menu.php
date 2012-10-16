@@ -1,0 +1,2 @@
+<a href="<?= $this->jempe_admin->admin_url('users') ?>" <?php if( $this->uri->segment(2) == 'users' ) echo 'class="selected"'; ?> ><?= $this->lang->line('jempe_menu_users') ?></a> |
+<a href="<?= $this->jempe_admin->admin_url('user_types') ?>" <?php if( $this->uri->segment(2) == 'user_types' || $this->uri->segment(2) == 'edit_user_type' || $this->uri->segment(2) == 'delete_user_type' ) echo 'class="selected"'; ?> ><?= $this->lang->line('jempe_menu_user_types') ?></a>
