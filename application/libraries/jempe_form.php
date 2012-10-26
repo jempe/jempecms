@@ -885,6 +885,26 @@ class Jempe_form {
 			}
 		}
 	}
+
+	 // ------------------------------------------------------------------------
+
+	 /**
+	 * Check if there are checkbox that were not checked and assign 0 value
+	 *
+	 *
+	 * @access	public
+	 * @return	array
+	 */
+	function process_checkboxes()
+	{
+		foreach($_POST['jempe_fields'] as $field)
+		{
+			if( ! isset($_POST[$field]))
+			{
+				$_POST[$field] = 0;
+			}
+		}
+	}
 		
 	// ------------------------------------------------------------------------
 	
