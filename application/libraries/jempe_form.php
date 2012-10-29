@@ -528,6 +528,124 @@ class Jempe_form {
 		}
 	}
 
+		
+	// ------------------------------------------------------------------------
+	
+	/**
+	* Javacript upload file Field
+	*
+	*
+	* @access	public
+	* @param	string the name of the form field
+	* @param	mixed array containing the list of files
+	* @param	string the name of the key that contains the configuration values in $this->jempe_cms->upload_files_config
+	* @return	string
+	*/	
+	function form_files($name, $values, $config_array)
+	{
+		if( ! $this->verify_form)
+		{
+			$CI =& get_instance();
+
+			$this->form_jquery_ui('file');
+
+			$config = $CI->jempe_cms->upload_files_config[$config_array];
+
+			$uniq_id = uniqid();
+
+			if($this->jquery_ajaxupload === FALSE)
+			{
+				$this->jquery_functions[] = '
+					$("*[onmouseover^=jempe_ajaxupload]").each(function()
+					{
+						$(this).trigger("mouseover");
+					});
+				';
+
+				$this->javascript_functions[] = '
+
+					var jempe_uploader_'.$name.'_files = 0;
+
+					function jempe_ajaxupload(button, config)
+					{
+						if(button.hasClass("jempe_ajaxupload") == false)
+						{
+							new AjaxUpload(button, {
+								action: "'.site_url('jempe_uploader.xml').'", 
+								name: "jempe_uploader_"+config,
+								data: 
+								{
+									"upload_config": config
+								},
+								onSubmit : function(file, ext)
+								{
+									button.css("background", "url('.static_url().'images/loading.gif) no-repeat");
+									button.attr("disabled", "disabled");
+								},
+								onComplete: function(file, response)
+								{
+									button.removeAttr("style");
+									// enable upload button
+									button.removeAttr("disabled");
+									
+									if($("error", response).text() != "")
+									{
+										alert($("error", response).text());
+									}
+									else
+									{
+										var file_name = $("file_name", response).text();
+
+										if($("file_url", response).length > 0)
+										{
+											var file_link = "<a target=_blank href="+ $("file_url", response).text() +">" + $("file_name", response).text() + "</a>";
+										}
+										else
+										{
+											var file_link = file_name;
+										}
+
+										var file_new_id = "new_'.$name.'" + jempe_uploader_'.$name.'_files;
+
+										var input_field = "<input class=\'jempe_uploader_field\' rel=\'" + file_new_id + "\' type=\'hidden\' value=\'" + file_name + "\' name=\''.$name.'[" + file_new_id + "]\'>";
+										jempe_uploader_'.$name.'_files ++;
+
+										// add file to the list
+										button.parent().find(".jempe_uploaded").append("<li>" + file_link + " <a class=\'jempe_uploader_remove\' onclick=\\"$(this).parent().parent().parent().find(\'.jempe_uploader_field\').val(\'\'); $(this).parent().parent().parent().find(\'.jempe_uploader_button\').show(); $(this).parent().remove();\\" href=\'javascript:void(0);\'>X</a>" + input_field + "</li>");
+
+										if($("onComplete", response).length > 0)
+										{
+											eval($("onComplete", response).text() +"(response)");
+										}
+									}
+								}
+							});
+						}
+					}
+				';
+				$this->jquery_ajaxupload = TRUE;
+			}
+
+			$uploaded_file = $upload_form_fields = '';
+
+			if(isset($values) && count($values))
+			{
+				foreach($values as $file_id => $file_name)
+				{
+					$uploaded_file .= '<li>'.$file_name.' <a href="javascript:void(0);" onclick="$(this).parent().parent().parent().find(\'.jempe_uploader_field[rel='.$file_id.']\').val(\'\'); $(this).parent().parent().parent().find(\'.jempe_uploader_button\').show(); $(this).parent().remove();" class="jempe_uploader_remove">X</a></li>';
+
+					$upload_form_fields .= '<input class="jempe_uploader_field" rel="'.$file_id.'" type="hidden" value="'.$file_name.'" name="'.$name.'['.$file_id.']">';
+				}
+			}
+
+			return '<ul class="jempe_uploaded" >'.$uploaded_file.'</ul><div onmouseover="jempe_ajaxupload($(this), \''.$config_array.'\')" class="jempe_uploader_button" ><noscript>'.$CI->lang->line('jempe_uploader_no_script').'</noscript><span>'.$CI->lang->line('jempe_uploader_upload_file').'</span></div>'.$upload_form_fields;
+		}
+		else
+		{
+			return $default_value;
+		}
+	}
+
 	// ------------------------------------------------------------------------
 	
 	/**
