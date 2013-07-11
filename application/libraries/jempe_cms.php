@@ -85,32 +85,32 @@ if ( ! function_exists('upload_url'))
 
 class Jempe_cms {
 
-	var $structure = array(array("structure_id" => 0));
-	var $user_type = "public";
-	var $cms_fields = array
+	public $structure = array(array("structure_id" => 0));
+	public $user_type = "public";
+	public $cms_fields = array
 	(
 		'url'	=>	array("name" => "url", "type" => "url"),
 		'text' 	=>	array("name" => "title", "type" => "text"),
 		'text' 	=>	array("name" => "text", "type" => "htmlarea")
 	);
-	var $template = "";
-	var $page_data = "";
-	var $default_template = "base.php";
-	var $theme = "delejos";
-	var $presets = array();
-	var $selected_preset = FALSE;
-	var $cache_time = 10080;
-	var $cache = FALSE; //save pages in cache
-	var $image_library = 'GD2';
-	var $paginate_keyword = 'paginate';
-	var $paginate_uri_segment = 3;
-	var $file_manager_folder = "admin/uploads/";
-	var $jquery_field_types = array('htmlarea', 'date', 'file');
-	var $max_levels = 0;
-	var $page_list_condition = FALSE;
-	var $jempe_thumb_width = 200;
-	var $jempe_thumb_height = 200;
-	var $upload_images_config = array(
+	public $template = "";
+	public $page_data = "";
+	public $default_template = "base.php";
+	public $theme = "delejos";
+	public $presets = array();
+	public $selected_preset = FALSE;
+	public $cache_time = 10080;
+	public $cache = FALSE; //save pages in cache
+	public $image_library = 'GD2';
+	public $paginate_keyword = 'paginate';
+	public $paginate_uri_segment = 3;
+	public $file_manager_folder = "admin/uploads/";
+	public $jquery_field_types = array('htmlarea', 'date', 'file');
+	public $max_levels = 0;
+	public $page_list_condition = FALSE;
+	public $jempe_thumb_width = 200;
+	public $jempe_thumb_height = 200;
+	public $upload_images_config = array(
 		'upload_path' => "",
 		'allowed_types' => 'gif|jpg|png',
 		'max_size' => '5000',
@@ -118,7 +118,7 @@ class Jempe_cms {
 		'max_height' => '4000',
 		'max_filename' => '120'
 	);
-	var $upload_docs_config = array(
+	public $upload_docs_config = array(
 		'upload_path' => "",
 		'allowed_types' => 'pdf|doc|docx|xls|xlsx|zip',
 		'max_size' => '10000',
@@ -126,7 +126,7 @@ class Jempe_cms {
 		'max_height' => '4000',
 		'max_filename' => '120'
 	);
-	var $images_thumbs = array(
+	public $images_thumbs = array(
 		"jempe" => array(
 			"type" => "cropped",
 			"width" => 50,
@@ -134,15 +134,15 @@ class Jempe_cms {
 		)
 	);
 
-	var $edit_box_template = array(
+	public $edit_box_template = array(
 		'open'=>'<span class="jempe_edit_box" onmouseover="jempe_show_edit_link($(this))" onmouseout="jempe_edit_timer()" rel="{page_id}" title="{field_name}" >',
 		'close'=>'</span>'
 	);
 
-	var $edit_element_background_style = "#CCC";
-	var $edit_element_button = '<span class="jempe_edit_button" href="javascript:void(0)" onmouseover="jempe_cancel_timer();" onclick="jempe_show_edit_field( $(this).parent())">{button_name}</span>';
+	public $edit_element_background_style = "#CCC";
+	public $edit_element_button = '<span class="jempe_edit_button" href="javascript:void(0)" onmouseover="jempe_cancel_timer();" onclick="jempe_show_edit_field( $(this).parent())">{button_name}</span>';
 
-	var $upload_files_config = array(
+	public $upload_files_config = array(
 		'jempe_images' => array(
 			'upload_path' => "uploads/",
 			'allowed_types' => 'gif|jpg|png',
@@ -156,18 +156,18 @@ class Jempe_cms {
 		)
 	);
 
-	var $execute_after_upload = FALSE;
-	var $cache_driver = FALSE;
-	var $cache_enabled = FALSE;
-	var $cache_prefix = FALSE;
-	var $additional_cache_keys = FALSE;
+	public $execute_after_upload = FALSE;
+	public $cache_driver = FALSE;
+	public $cache_enabled = FALSE;
+	public $cache_prefix = FALSE;
+	public $additional_cache_keys = FALSE;
 
-	var $date_format = 'm/d/Y';
-	var $date_format_js = 'mm/dd/yy';
+	public $date_format = 'm/d/Y';
+	public $date_format_js = 'mm/dd/yy';
 
-	var $first_page_is_root = TRUE;
+	public $first_page_is_root = TRUE;
 
-	var $menu_spacer = '<div style="width:100%;height:40px;"></div>';
+	public $menu_spacer = '<div style="width:100%;height:40px;"></div>';
 
 /**
 	* Constructor - Sets Jempe Preferences
@@ -1575,20 +1575,37 @@ function pages_tree( $parent ){
 	* @param	int
 	* @return	void
 	*/
-	function create_cache_key($item_id, $type, $name, $expires)
+	function create_cache_key($item_id, $type, $name)
 	{
-		$CI =& get_instance();
-		$CI->load->library('jempe_db');
+		if( ! $this->cache_enabled)
+		{
+			return false;
+		}
 
-		$key_data = array(
-			'item_id'	=>	$item_id,
-			'key_type'	=>	$type,
-			'key_name'	=>	$name,
-			'key_creation'	=>	date('Y-m-d H:i:s'),
-			'key_expires'	=>	date('Y-m-d H:i:s', (time() + $expires))
-		);
+		$CI =& get_instance();
+
+		if(is_array($name))
+		{
+			$key_values = $name;
+		}
+		else
+		{
+			if($cache_key_value = $CI->cache->get($type .'_' .$item_id))
+			{
+				$key_values = unserialize($cache_key_value);
+
+				if( ! in_array($name, $key_values))
+				{
+					$key_values[] = $name;
+				}
+			}
+			else
+			{
+				$key_values = array($name);
+			}
+		}
 	
-		$CI->jempe_db->insert_except('jempe_cache_keys', $key_data);
+		$CI->cache->save($type .'_' .$item_id, serialize($key_values), $this->cache_time * 100);
 	}
 
 	// ------------------------------------------------------------------------
@@ -1609,8 +1626,6 @@ function pages_tree( $parent ){
 		}
 
 		$CI =& get_instance();
-		$write_db = $CI->load->database('write', TRUE);
-		$CI->load->library('jempe_db');
 
 		$lang_cache_keys = array(
 			$this->cache_prefix.'st_from_id_{id}_lvl',
@@ -1621,18 +1636,16 @@ function pages_tree( $parent ){
 			$this->cache_prefix.'jempe_has_parent_{id}'
 		);
 
-		$cache_keys = $write_db->get_where('jempe_cache_keys', array('item_id' => $item_id, 'key_type' => $type));
-
-		foreach($cache_keys->result_array() as $cache_key)
+		if($cache_keys = $CI->cache->get($type .'_' .$item_id))
 		{
-			if($CI->cache->delete($cache_key['key_name']))
+			$cache_keys = unserialize($cache_keys);
+
+			foreach($cache_keys as $cache_key)
 			{
-				$CI->jempe_db->delete('jempe_cache_keys', array('key_name' => $cache_key['key_name']));
+				$CI->cache->delete($cache_key);
 			}
-			else
-			{
-				$CI->jempe_db->update_except('jempe_cache_keys', 'key_name', array('key_name' => $cache_key['key_name'], 'key_delete' => 1));
-			}
+
+			$this->create_cache_key($item_id, $type, $cache_key);
 		}
 	}
 

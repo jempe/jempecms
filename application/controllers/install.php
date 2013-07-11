@@ -92,7 +92,6 @@ function create_db(){
 		'jempe_image_tags'			=>	array('it_tag' => FALSE, 'it_image' => FALSE),
 		'jempe_content'				=>	array('content_id' => TRUE),
 		'jempe_history'				=>	array('content_id' => FALSE),
-		'jempe_cache_keys'			=>	array('item_id' => FALSE, 'key_type' => FALSE),
 		'jempe_email_log'			=>	array('email_id' => TRUE, 'email_user' => FALSE),
 		'jempe_lang'				=>	array('lang_id' => TRUE, 'lang_user' => FALSE, 'lang_key' => FALSE),
 		'jempe_text_captcha_questions'	=>	array('tc_question_id' => TRUE),
@@ -583,37 +582,6 @@ function create_db(){
 				'constraint' => 6,
 				'null' => TRUE
 			)
-		),
-		'jempe_cache_keys'=>array(
-			'item_id'=>array(
-				'type' => 'INT',
-				'constraint' => 6,
-				'null' => FALSE
-			),
-			'key_type'=>array(
-				'type' => 'VARCHAR',
-				'constraint' => '10',
-				'null' => TRUE
-			),
-			'key_name'=>array(
-				'type' => 'VARCHAR',
-				'constraint' => '250',
-				'null' => TRUE
-			),
-			'key_delete'=>array(
-				'type' => 'INT',
-				'constraint' => 1,
-				'null' => FALSE,
-				'default' => 0
-			),
-			'key_creation'=>array(
-				'type' => 'DATETIME',
-				'null' => TRUE
-			),
-			'key_expires'=>array(
-				'type' => 'DATETIME',
-				'null' => TRUE
-			),
 		),
 		'jempe_email_log'=>array(
 			'email_id'=>array(
