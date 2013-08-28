@@ -95,7 +95,7 @@ class Jempe_form {
 	public $jquery_table = false;
 
 	public $jquery_ui_source = array(
-		'ui'=>'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/jquery-ui.min.js',
+		'ui'=>'https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js',
 		'crop'=>'jcrop.js',
 		'grid'=>'jquery.jqgrid.min.js',
 		'file'=>'ajaxupload.js'
@@ -1727,13 +1727,22 @@ class Jempe_form {
 			if(ENVIRONMENT == 'development')
 			{
 				$jquery_path = static_url() . 'jquery/';
+				$jquery2_path = static_url() . 'jquery2/';
 			}
 			else
 			{
-				$jquery_path =  'https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/';
+				$jquery_path =  'https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/';
+				$jquery2_path =  'https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/';
 			}
 
-			$output = '<script type="text/javascript" src="'.$jquery_path.'jquery.min.js"></script>'."\n";
+			$output = '
+				<!--[if lt IE 9]>
+					<script src="'.$jquery_path.'jquery.min.js"></script>
+				<![endif]-->
+				<!--[if gte IE 9]><!-->
+					<script src="'.$jquery2_path.'jquery.min.js"><</script>
+				<!--<![endif]-->
+				'."\n";
 
 			for($i = 0; $i < count($this->jquery_files); $i++)
 			{
