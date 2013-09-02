@@ -36,6 +36,11 @@ class Jempe_lang {
 	{
 		$CI =& get_instance();
 	}
+
+	function ro_line($line)
+	{
+		return $this->line($line, 'text', FALSE, FALSE);
+	}
 	
 	// --------------------------------------------------------------------
 	
@@ -48,7 +53,7 @@ class Jempe_lang {
 	* @param	string	the id
 	* @return	string
 	*/	
-	function line($line, $field_type = 'text', $user = FALSE)
+	function line($line, $field_type = 'text', $user = FALSE, $editable = TRUE)
 	{
 		$CI =& get_instance();
 
@@ -117,7 +122,7 @@ class Jempe_lang {
 				if($user === FALSE)
 				{
 					$CI->load->library('jempe_db');
-					$CI->jempe_db->insert_except('jempe_lang', array('lang_key' => $line, 'lang_type' => $field_type));
+					$CI->jempe_db->insert_except('jempe_lang', array('lang_key' => $line, 'lang_type' => $field_type, 'lang_line_'.$CI->config->item('language') => $CI->lang->line($line)));
 				}
 
 				if($CI->lang->line($line) !== FALSE)
@@ -129,7 +134,7 @@ class Jempe_lang {
 			}
 		}
 
-		if($CI->session->userdata('user_id') > 0)
+		if($CI->session->userdata('user_id') > 0 && $editable == TRUE)
 		{
 			$CI->load->library('jempe_admin');
 
