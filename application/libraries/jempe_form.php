@@ -1174,13 +1174,20 @@ class Jempe_form {
 		$CI =& get_instance();
 		$CI->load->helper('form');
 
-		if(isset($selected[$name]))
+		if(is_array($selected))
 		{
-			$selected_value = $selected[$name];
+			if(isset($selected[$name]))
+			{
+				$selected_value = $selected[$name];
+			}
+			else
+			{
+				$selected_value = '';
+			}
 		}
 		else
 		{
-			$selected_value = '';
+			$selected_value = $selected;
 		}
 
 		$output = $this->radiomultiple_template["radio_open"]; 
@@ -2851,6 +2858,198 @@ class Jempe_form {
 			</body>
 			</html>
 		';
+	}
+
+	// --------------------------------------------------------------------
+	
+	/**
+	* form label
+	*
+	* 
+	*
+	* @access	public
+	* @param	string	name of the label
+	* @param	string	for attribute
+	* @param	string	extra atributes
+	* @return	string
+	*/	
+	function form_label($label, $for = '', $extra = '')
+	{
+		if($for)
+		{
+			$extra .= ' for="' .$for .'"'; 
+		}
+
+		return '<label '.$extra.' >'.$label.'</label>';
+	}
+
+	// Jquery mobile fields
+
+	// --------------------------------------------------------------------
+	
+	/**
+	* Jquery Mobile Flip Switch
+	*
+	* http://view.jquerymobile.com/1.3.2/dist/demos/widgets/sliders/switch.html#&ui-state=dialog
+	*
+	* @access	public
+	* @param	string	name of the select tag
+	* @param	array	a key/value pair of options
+	* @param	mixed	selected value or array that contains selected value
+	* @param	string	extra parameters for select tag
+	* @return	string
+	*/	
+	function jmobile_flip_switch($name = '', $label = '', $options = array(), $selected = '', $extra = '')
+	{
+		if($label)
+		{
+			$output = $this->form_label($label, $name);
+		}
+		else
+		{
+			$output = '';
+		}
+
+		$output .=  $this->form_dropdown($name, $options, $selected, $extra.' id="'. $name .'" data-role="slider"');
+
+		return $output;
+	}
+
+	// --------------------------------------------------------------------
+	
+	/**
+	* Jquery Mobile Textarea
+	*
+	* http://view.jquerymobile.com/1.3.2/dist/demos/widgets/textinputs/
+	*
+	* @access	public
+	* @param	string	name of the select tag
+	* @param	mixed	value or array that contains selected value
+	* @param	string	extra parameters for textarea tag
+	* @return	string
+	*/	
+	function jmobile_textarea($name = '', $label = '', $value = '', $extra = '')
+	{
+		if($label)
+		{
+			$output = $this->form_label($label, $name);
+		}
+		else
+		{
+			$output = '';
+		}
+
+		$output .=  $this->form_textarea($name, $value, $extra);
+
+		return $output;
+	}
+
+	// --------------------------------------------------------------------
+	
+	/**
+	* Jquery Radio Buttons
+	*
+	* http://view.jquerymobile.com/1.3.2/dist/demos/widgets/radiobuttons/#&ui-state=dialog
+	*
+	* @access	public
+	* @param	string	name of the select tag
+	* @param	mixed	value or array that contains selected value
+	* @param	string	extra parameters for textarea tag
+	* @return	string
+	*/	
+	function jmobile_radio($name = '', $label = '', $options = '', $selected = '', $extra = '', $type = "")
+	{
+		$output = '<fieldset data-role="controlgroup" '.$type.'>';
+
+		if($label)
+		{
+			$output .= '<legend>'.$label.'</legend>';
+		}
+
+		$default_template = $this->radiomultiple_template;
+
+		$this->radiomultiple_template = array(
+			"radio_open" => '' ,
+			"radio_row" => '{value}<label for="{option_id}">{name}</label>' ,
+			"radio_close" => ''
+		);
+
+		$output .=  $this->form_radiomultiple($name, $options, $selected, $extra);
+
+		$output .= '</fieldset>';
+
+		$this->radiomultiple_template = $default_template;
+
+		return $output;
+	}
+
+	// --------------------------------------------------------------------
+	
+	/**
+	* Jquery Mobile Text
+	*
+	* http://view.jquerymobile.com/1.3.2/dist/demos/widgets/textinputs/
+	*
+	* @access	public
+	* @param	string	name of the select tag
+	* @param	mixed	value or array that contains selected value
+	* @param	string	extra parameters for textarea tag
+	* @return	string
+	*/	
+	function jmobile_input($name = '', $label = '', $value = '', $extra = '')
+	{
+		if($label)
+		{
+			$output = $this->form_label($label, $name);
+		}
+		else
+		{
+			$output = '';
+		}
+
+		$output .=  $this->form_input($name, $value, $extra);
+
+		return $output;
+	}
+
+	// --------------------------------------------------------------------
+	
+	/**
+	* Jquery Checkbox Buttons
+	*
+	* http://view.jquerymobile.com/1.3.2/dist/demos/widgets/radiobuttons/#&ui-state=dialog
+	*
+	* @access	public
+	* @param	string	name of the select tag
+	* @param	mixed	value or array that contains selected value
+	* @param	array	options
+	* @param	string	extra parameters for textarea tag
+	* @return	string
+	*/	
+	function jmobile_checkbox($name = '', $label = '', $options = '', $selected = '', $extra = '')
+	{
+		$output = '<fieldset data-role="controlgroup">';
+
+		if($label)
+		{
+			$output .= '<legend>'.$label.'</legend>';
+		}
+
+		$default_template = $this->checkboxmultiple_template;
+
+		$this->checkboxmultiple_template = array(
+			"checkbox_open" => '' ,
+			"checkbox_row" => '{value}<label for="{option_id}">{name}</label>' ,
+			"checkbox_close" => ''
+		);
+
+		$output .=  $this->form_checkboxmultiple($name, $options, $selected, $extra);
+
+		$output .= '</fieldset>';
+
+		$this->checkboxmultiple_template = $default_template;
+
+		return $output;
 	}
 }
 
