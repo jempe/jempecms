@@ -245,7 +245,7 @@ function create_db(){
 			),
 			'user_agent'=>array(
 				'type' => 'VARCHAR',
-				'constraint' => '50',
+				'constraint' => '250',
 				'null' => TRUE
 			),
 			'last_activity'=> array(
