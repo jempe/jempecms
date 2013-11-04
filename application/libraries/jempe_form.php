@@ -2991,8 +2991,9 @@ class Jempe_form {
 	* http://view.jquerymobile.com/1.3.2/dist/demos/widgets/textinputs/
 	*
 	* @access	public
-	* @param	string	name of the select tag
-	* @param	mixed	value or array that contains selected value
+	* @param	string	name of the input tag
+	* @param	string	value of the label
+	* @param	string	default value
 	* @param	string	extra parameters for textarea tag
 	* @return	string
 	*/	
@@ -3008,6 +3009,106 @@ class Jempe_form {
 		}
 
 		$output .=  $this->form_input($name, $value, $extra);
+
+		return $output;
+	}
+
+	// --------------------------------------------------------------------
+	
+	/**
+	* Jquery Mobile Dropdown
+	*
+	* http://view.jquerymobile.com/1.3.2/dist/demos/widgets/textinputs/
+	*
+	* @access	public
+	* @param	string	name of the input tag
+	* @param	string	value of the label
+	* @param	array	options
+	* @param	string	default value
+	* @param	string	extra parameters for textarea tag
+	* @return	string
+	*/	
+	function jmobile_dropdown($name = '', $label = '', $options = array(), $value = '', $extra = '')
+	{
+		if($label)
+		{
+			$output = $this->form_label($label, $name);
+		}
+		else
+		{
+			$output = '';
+		}
+
+		$output .=  $this->form_dropdown($name, $options, $value, $extra);
+
+		return $output;
+	}
+
+	// --------------------------------------------------------------------
+	
+	/**
+	* Jquery Mobile Date
+	*
+	* http://view.jquerymobile.com/1.3.2/dist/demos/widgets/textinputs/#&ui-state=dialog
+	*
+	* @access	public
+	* @param	string	name of the input tag
+	* @param	string	value of the label
+	* @param	string	default value
+	* @param	string	extra parameters for textarea tag
+	* @return	string
+	*/	
+	function jmobile_date($name = '', $label = '', $value = '', $extra = '')
+	{
+		if($label)
+		{
+			$output = $this->form_label($label, $name);
+		}
+		else
+		{
+			$output = '';
+		}
+
+		if(is_array($value))
+		{
+			$field_value = $value[$name];
+		}
+		else
+		{
+			$field_value = $value;
+		}
+
+		$output .=  '<input type="date" name="' .$name .'" value="' . $value .'" '. $extra .'  />';
+
+		return $output;
+	}
+
+	// --------------------------------------------------------------------
+	
+	/**
+	* Jquery Mobile Password
+	*
+	* http://view.jquerymobile.com/1.3.2/dist/demos/widgets/textinputs/
+	*
+	* @access	public
+	* @param	string	name of the input tag
+	* @param	string	value of the label
+	* @param	string	default value
+	* @param	string	extra parameters for textarea tag
+	* @return	string
+	*/	
+	function jmobile_password($name = '', $label = '', $value = '', $extra = '')
+	{
+		if($label)
+		{
+			$output = $this->form_label($label, $name);
+		}
+		else
+		{
+			$output = '';
+		}
+
+		$output .=  $this->form_password($name, $value, $extra);
 
 		return $output;
 	}
