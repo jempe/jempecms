@@ -190,7 +190,14 @@ class Jempe_cms {
 
 		if( ! $this->cache_prefix)
 		{
-			$this->cache_prefix = md5($_SERVER['HTTP_HOST']);
+			if(isset($_SERVER['HTTP_HOST']))
+			{
+				$this->cache_prefix = md5($_SERVER['HTTP_HOST']);
+			}
+			else
+			{
+				$this->cache_prefix = md5(JEMPEPATH);
+			}
 		}
 	
 		if($CI->config->item('jempe_images_thumbs'))
